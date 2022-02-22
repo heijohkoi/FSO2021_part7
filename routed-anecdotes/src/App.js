@@ -1,7 +1,14 @@
-import { useState } from "react";
-import { Routes, Route, Link, useMatch } from "react-router-dom";
+import { useState } from 'react'
+import {
+  Routes,
+  Route,
+  Link,
+  useMatch,
+  useNavigate
+} from 'react-router-dom'
 
 const Anecdote = ({ anecdote }) => {
+  // console.log('matched anecdote: ', anecdote)
   return (
     <div>
       <h2>{anecdote.content}</h2>
@@ -12,8 +19,8 @@ const Anecdote = ({ anecdote }) => {
       </div>
       <br />
     </div>
-  );
-};
+  )
+}
 
 const AnecdoteList = ({ anecdotes }) => (
   <div>
@@ -26,7 +33,7 @@ const AnecdoteList = ({ anecdotes }) => (
       ))}
     </ul>
   </div>
-);
+)
 
 const About = () => (
   <div>
@@ -34,47 +41,51 @@ const About = () => (
     <p>According to Wikipedia:</p>
 
     <em>
-      An anecdote is a brief, revealing account of an individual person or an
-      incident. Occasionally humorous, anecdotes differ from jokes because their
-      primary purpose is not simply to provoke laughter but to reveal a truth
-      more general than the brief tale itself, such as to characterize a person
-      by delineating a specific quirk or trait, to communicate an abstract idea
-      about a person, place, or thing through the concrete details of a short
-      narrative. An anecdote is "a story with a point."
+      An anecdote is a brief, revealing account of an individual
+      person or an incident. Occasionally humorous, anecdotes differ
+      from jokes because their primary purpose is not simply to
+      provoke laughter but to reveal a truth more general than the
+      brief tale itself, such as to characterize a person by
+      delineating a specific quirk or trait, to communicate an
+      abstract idea about a person, place, or thing through the
+      concrete details of a short narrative. An anecdote is "a story
+      with a point."
     </em>
 
     <p>
-      Software engineering is full of excellent anecdotes, at this app you can
-      find the best and add more.
+      Software engineering is full of excellent anecdotes, at this app
+      you can find the best and add more.
     </p>
   </div>
-);
+)
 
 const Footer = () => (
   <div>
-    Anecdote app for <a href="https://fullstackopen.com/">Full Stack Open</a>.
-    See{" "}
+    Anecdote app for{' '}
+    <a href="https://fullstackopen.com/">Full Stack Open</a>. See{' '}
     <a href="https://github.com/fullstack-hy2020/routed-anecdotes/blob/master/src/App.js">
       https://github.com/fullstack-hy2020/routed-anecdotes/blob/master/src/App.js
-    </a>{" "}
+    </a>{' '}
     for the source code.
   </div>
-);
+)
 
 const CreateNew = (props) => {
-  const [content, setContent] = useState("");
-  const [author, setAuthor] = useState("");
-  const [info, setInfo] = useState("");
+  const [content, setContent] = useState('')
+  const [author, setAuthor] = useState('')
+  const [info, setInfo] = useState('')
+  const navigate = useNavigate()
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault()
     props.addNew({
       content,
       author,
       info,
-      votes: 0,
-    });
-  };
+      votes: 0
+    })
+    navigate('/')
+  }
 
   return (
     <div>
@@ -107,55 +118,76 @@ const CreateNew = (props) => {
         <button>create</button>
       </form>
     </div>
-  );
-};
+  )
+}
 
 const App = () => {
   const padding = {
-    paddingRight: 5,
-  };
+    paddingRight: 5
+  }
 
   const [anecdotes, setAnecdotes] = useState([
     {
-      content: "If it hurts, do it more often",
-      author: "Jez Humble",
-      info: "https://martinfowler.com/bliki/FrequencyReducesDifficulty.html",
+      content: 'If it hurts, do it more often',
+      author: 'Jez Humble',
+      info: 'https://martinfowler.com/bliki/FrequencyReducesDifficulty.html',
       votes: 0,
-      id: 1,
+      id: 1
     },
     {
-      content: "Premature optimization is the root of all evil",
-      author: "Donald Knuth",
-      info: "http://wiki.c2.com/?PrematureOptimization",
+      content: 'Premature optimization is the root of all evil',
+      author: 'Donald Knuth',
+      info: 'http://wiki.c2.com/?PrematureOptimization',
       votes: 0,
-      id: 2,
-    },
-  ]);
+      id: 2
+    }
+  ])
 
-  const [notification, setNotification] = useState("");
+  const [notification, setNotification] = useState('')
 
   const addNew = (anecdote) => {
-    anecdote.id = (Math.random() * 10000).toFixed(0);
-    setAnecdotes(anecdotes.concat(anecdote));
-  };
+    anecdote.id = parseFloat((Math.random() * 10000).toFixed(0))
+    setAnecdotes(anecdotes.concat(anecdote))
+    // console.log(anecdotes)
+    setNotification(`a new anecdote "${anecdote.content}" created!`)
+    setTimeout(() => {
+      setNotification('')
+    }, 5000)
+  }
 
-  const anecdoteById = (id) => anecdotes.find((a) => a.id === id);
+  const Notification = () => {
+    const style = {
+      border: 'solid',
+      padding: 10,
+      borderWidth: 1
+    }
+
+    if (notification !== '') {
+      return <div style={style}>{notification}</div>
+    }
+
+    return <div></div>
+  }
+
+  const anecdoteById = (id) => anecdotes.find((a) => a.id === id)
 
   const vote = (id) => {
-    const anecdote = anecdoteById(id);
+    const anecdote = anecdoteById(id)
 
     const voted = {
       ...anecdote,
-      votes: anecdote.votes + 1,
-    };
+      votes: anecdote.votes + 1
+    }
 
-    setAnecdotes(anecdotes.map((a) => (a.id === id ? voted : a)));
-  };
+    setAnecdotes(anecdotes.map((a) => (a.id === id ? voted : a)))
+  }
 
-  const match = useMatch("/:id");
+  const match = useMatch('/:id')
   const anecdote = match
-    ? anecdotes.find((anecdote) => anecdote.id === Number(match.params.id))
-    : null;
+    ? anecdotes.find(
+        (anecdote) => anecdote.id === Number(match.params.id)
+      )
+    : null
 
   return (
     <div>
@@ -172,18 +204,29 @@ const App = () => {
         </Link>
       </div>
 
+      <Notification />
+
       <Routes>
-        <Route path="/:id" element={<Anecdote anecdote={anecdote} />} />
+        <Route
+          path="/:id"
+          element={<Anecdote anecdote={anecdote} />}
+        />
         <Route path="/about" element={<About />} />
-        <Route path="/create" element={<CreateNew addNew={addNew} />} />
-        <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
+        <Route
+          path="/create"
+          element={<CreateNew addNew={addNew} />}
+        />
+        <Route
+          path="/"
+          element={<AnecdoteList anecdotes={anecdotes} />}
+        />
       </Routes>
 
       <div>
         <Footer />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default App;
+export default App
