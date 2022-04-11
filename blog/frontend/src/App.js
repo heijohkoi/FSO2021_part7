@@ -6,7 +6,10 @@ import LoginForm from './components/LoginForm'
 import NewBlogForm from './components/NewBlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
-import { setNotification } from './reducers/notificationReducer'
+import {
+  setNotification,
+  clearNotification
+} from './reducers/notificationReducer'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -112,9 +115,8 @@ const App = () => {
 
   const notify = (message, type = 'info') => {
     dispatch(setNotification({ message, type }))
-    console.log('from notify: ', message, ' ', type)
     setTimeout(() => {
-      dispatch(setNotification(null))
+      dispatch(clearNotification())
     }, 5000)
   }
 

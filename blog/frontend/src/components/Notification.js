@@ -3,13 +3,12 @@ import { useSelector } from 'react-redux'
 
 const Notification = () => {
   const notification = useSelector((state) => state.notification)
-  console.log('from Notification: ', notification)
-  if (notification === '') {
+  if (notification.length === 0) {
     return null
   }
 
   const style = {
-    color: notification.type === 'alert' ? 'red' : 'green',
+    color: notification[0].type === 'alert' ? 'red' : 'green',
     background: 'lightgrey',
     fontSize: 20,
     borderStyle: 'solid',
@@ -20,7 +19,7 @@ const Notification = () => {
 
   return (
     <div id="notification" style={style}>
-      {notification.message}
+      {notification[0].message}
     </div>
   )
 }
