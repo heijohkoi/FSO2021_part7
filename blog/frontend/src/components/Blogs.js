@@ -3,8 +3,9 @@ import { useSelector, useDispatch } from 'react-redux'
 import Blog from './Blog'
 import blogService from '../services/blogs'
 import { initializeBlogs } from '../reducers/blogReducer'
+import { createNotification } from '../reducers/notificationReducer'
 
-const Blogs = ({ notify, user }) => {
+const Blogs = ({ user }) => {
   const blogs = useSelector((state) => state.blogs)
   const dispatch = useDispatch()
 
@@ -17,8 +18,10 @@ const Blogs = ({ notify, user }) => {
     }
 
     blogService.update(liked.id, liked).then((updatedBlog) => {
-      notify(
-        `you liked '${updatedBlog.title}' by ${updatedBlog.author}`
+      dispatch(
+        createNotification(
+          `you liked '${updatedBlog.title}' by ${updatedBlog.author}`
+        )
       )
       const updatedBlogs = blogs.map((b) =>
         b.id === id ? updatedBlog : b

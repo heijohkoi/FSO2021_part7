@@ -2,8 +2,9 @@ import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { addBlog } from '../reducers/blogReducer'
 import blogService from '../services/blogs'
+import { createNotification } from '../reducers/notificationReducer'
 
-const NewBlogForm = ({ notify, blogFormRef }) => {
+const NewBlogForm = ({ blogFormRef }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -14,16 +15,20 @@ const NewBlogForm = ({ notify, blogFormRef }) => {
     blogService
       .create(blog)
       .then((createdBlog) => {
-        notify(
-          `a new blog '${createdBlog.title}' by ${createdBlog.author} added`
+        dispatch(
+          createNotification(
+            `a new blog '${createdBlog.title}' by ${createdBlog.author} added`
+          )
         )
         dispatch(addBlog(createdBlog))
         blogFormRef.current.toggleVisibility()
       })
       .catch((error) => {
-        notify(
-          'creating a blog failed: ' + error.response.data.error,
-          'alert'
+        dispatch(
+          createNotification(
+            'creating a blog failed: ' + error.response.data.error,
+            'alert'
+          )
         )
       })
   }

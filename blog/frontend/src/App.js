@@ -6,10 +6,7 @@ import NewBlogForm from './components/NewBlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import Blogs from './components/Blogs'
-import {
-  setNotification,
-  clearNotification
-} from './reducers/notificationReducer'
+import { createNotification } from './reducers/notificationReducer'
 import { initializeBlogs } from './reducers/blogReducer'
 
 import blogService from './services/blogs'
@@ -43,24 +40,19 @@ const App = () => {
       .then((user) => {
         setUser(user)
         userService.setUser(user)
-        notify(`${user.name} logged in!`)
+        dispatch(createNotification(`${user.name} logged in!`))
       })
       .catch(() => {
-        notify('wrong username/password', 'alert')
+        dispatch(
+          createNotification('wrong username/password', 'alert')
+        )
       })
   }
 
   const logout = () => {
     setUser(null)
     userService.clearUser()
-    notify('good bye!')
-  }
-
-  const notify = (message, type = 'info') => {
-    dispatch(setNotification({ message, type }))
-    setTimeout(() => {
-      dispatch(clearNotification())
-    }, 5000)
+    dispatch(createNotification('good bye!'))
   }
 
   if (user === null) {
@@ -84,10 +76,10 @@ const App = () => {
       </div>
 
       <Togglable buttonLabel="new blog" ref={blogFormRef}>
-        <NewBlogForm notify={notify} blogFormRef={blogFormRef} />
+        <NewBlogForm blogFormRef={blogFormRef} />
       </Togglable>
 
-      <Blogs notify={notify} user={user} />
+      <Blogs user={user} />
     </div>
   )
 }
