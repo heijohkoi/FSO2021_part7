@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { useDispatch } from 'react-redux'
+import React, { useEffect, useRef } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 
 import LoginForm from './components/LoginForm'
 import NewBlogForm from './components/NewBlogForm'
@@ -8,13 +8,13 @@ import Togglable from './components/Togglable'
 import Blogs from './components/Blogs'
 import { createNotification } from './reducers/notificationReducer'
 import { setBlogs } from './reducers/blogReducer'
+import { initUser } from './reducers/userReducer'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
 import userService from './services/user'
 
 const App = () => {
-  const [user, setUser] = useState(null)
   const blogFormRef = useRef()
   const dispatch = useDispatch()
 
@@ -27,9 +27,9 @@ const App = () => {
   useEffect(() => {
     const userFromStorage = userService.getUser()
     if (userFromStorage) {
-      setUser(userFromStorage)
+      dispatch(initUser(userFromStorage))
     }
-  }, [])
+  }, [dispatch])
 
   const login = async (username, password) => {
     loginService
@@ -38,7 +38,7 @@ const App = () => {
         password
       })
       .then((user) => {
-        setUser(user)
+        dispatch(initUser(user))
         userService.setUser(user)
         dispatch(createNotification(`${user.name} logged in!`))
       })
@@ -50,10 +50,12 @@ const App = () => {
   }
 
   const logout = () => {
-    setUser(null)
+    dispatch(initUser(null))
     userService.clearUser()
     dispatch(createNotification('good bye!'))
   }
+
+  const user = useSelector((state) => state.user)
 
   if (user === null) {
     return (
