@@ -1,17 +1,50 @@
 import React, { useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { initializeBlogs } from '../reducers/blogReducer'
+import blogService from '../services/blogs'
 
-const NewBlogForm = ({ onCreate }) => {
+const NewBlogForm = ({ notify, blogFormRef }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const blogs = useSelector((state) => state.blogs)
+
+  const dispatch = useDispatch()
+
+  const createBlog = async (blog) => {
+    blogService
+      .create(blog)
+      .then((createdBlog) => {
+        notify(
+          `a new blog '${createdBlog.title}' by ${createdBlog.author} added`
+        )
+        dispatch(initializeBlogs(blogs.concat(createdBlog)))
+        // setBlogs(blogs.concat(createdBlog))
+        blogFormRef.current.toggleVisibility()
+      })
+      .catch((error) => {
+        notify(
+          'creating a blog failed: ' + error.response.data.error,
+          'alert'
+        )
+      })
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    onCreate({ title, author, url, likes: 0 })
+    createBlog({ title, author, url, likes: 0 })
     setAuthor('')
     setTitle('')
     setUrl('')
   }
+
+  // const handleSubmit = (event) => {
+  //   event.preventDefault()
+  //   onCreate({ title, author, url, likes: 0 })
+  //   setAuthor('')
+  //   setTitle('')
+  //   setUrl('')
+  // }
 
   return (
     <div>
