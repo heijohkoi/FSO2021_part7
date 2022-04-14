@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Blog from './Blog'
 import blogService from '../services/blogs'
-import { initializeBlogs } from '../reducers/blogReducer'
+import { setBlogs } from '../reducers/blogReducer'
 import { createNotification } from '../reducers/notificationReducer'
 
 const Blogs = ({ user }) => {
@@ -26,7 +26,7 @@ const Blogs = ({ user }) => {
       const updatedBlogs = blogs.map((b) =>
         b.id === id ? updatedBlog : b
       )
-      dispatch(initializeBlogs(updatedBlogs))
+      dispatch(setBlogs(updatedBlogs))
     })
   }
 
@@ -43,7 +43,7 @@ const Blogs = ({ user }) => {
 
     blogService.remove(id).then(() => {
       const updatedBlogs = blogs.filter((b) => b.id !== id)
-      dispatch(initializeBlogs(updatedBlogs))
+      dispatch(setBlogs(updatedBlogs))
     })
   }
 

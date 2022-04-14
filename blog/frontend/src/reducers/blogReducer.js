@@ -10,12 +10,12 @@ const blogSlice = createSlice({
     addBlog(state, action) {
       state.push(action.payload)
     },
-    initializeBlogs(state, action) {
+    setBlogs(state, action) {
       return action.payload.sort(byLikes)
     }
   }
 })
 
-export const { addBlog, initializeBlogs } = blogSlice.actions
+export const { addBlog, setBlogs } = blogSlice.actions
 
 export default blogSlice.reducer

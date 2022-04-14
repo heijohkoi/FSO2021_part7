@@ -7,7 +7,7 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import Blogs from './components/Blogs'
 import { createNotification } from './reducers/notificationReducer'
-import { initializeBlogs } from './reducers/blogReducer'
+import { setBlogs } from './reducers/blogReducer'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -20,7 +20,7 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then((blogs) => {
-      dispatch(initializeBlogs(blogs))
+      dispatch(setBlogs(blogs))
     })
   }, [dispatch])
 
