@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { Routes, Route, Link } from 'react-router-dom'
+import _ from 'lodash'
 
 import LoginForm from './components/LoginForm'
 import NewBlogForm from './components/NewBlogForm'
@@ -66,6 +68,57 @@ const App = () => {
     )
   }
 
+  const Home = () => {
+    return (
+      <div>
+        <Togglable buttonLabel="new blog" ref={blogFormRef}>
+          <NewBlogForm blogFormRef={blogFormRef} />
+        </Togglable>
+
+        <Blogs user={user} />
+      </div>
+    )
+  }
+
+  const Users = () => {
+    const blogs = useSelector((state) => state.blogs)
+    const byUser = _.groupBy(blogs, (b) => b.user.name)
+    const blogCounts = Object.keys(byUser).map((name) => {
+      return {
+        name,
+        addedBlogs: byUser[name].length
+      }
+    })
+    const sortedByBlogCounts = blogCounts.sort(
+      (a, b) => b.blogs - a.blogs
+    )
+    return (
+      <div>
+        <h2>Users</h2>
+        <table>
+          <tbody>
+            <tr>
+              <th></th>
+              <th>blogs created</th>
+            </tr>
+            {sortedByBlogCounts.map((u) => {
+              return (
+                <tr key={u.name}>
+                  <td>{u.name}</td>
+                  <td>{u.addedBlogs}</td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+    )
+  }
+
+  const padding = {
+    padding: 5
+  }
+
   return (
     <div>
       <h2>blogs</h2>
@@ -73,15 +126,26 @@ const App = () => {
       <Notification />
 
       <div>
+        <Link style={padding} to="/">
+          home
+        </Link>
+        <Link style={padding} to="/users">
+          users
+        </Link>
         {user.name} logged in
         <button onClick={logout}>logout</button>
       </div>
 
-      <Togglable buttonLabel="new blog" ref={blogFormRef}>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/users" element={<Users />} />
+      </Routes>
+
+      {/* <Togglable buttonLabel="new blog" ref={blogFormRef}>
         <NewBlogForm blogFormRef={blogFormRef} />
       </Togglable>
 
-      <Blogs user={user} />
+      <Blogs user={user} /> */}
     </div>
   )
 }
