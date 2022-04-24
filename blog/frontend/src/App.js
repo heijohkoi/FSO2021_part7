@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Routes, Route, Link } from 'react-router-dom'
-import _ from 'lodash'
+// import _ from 'lodash'
+// import axios from 'axios'
 
 import LoginForm from './components/LoginForm'
 import NewBlogForm from './components/NewBlogForm'
@@ -11,10 +12,12 @@ import Blogs from './components/Blogs'
 import { createNotification } from './reducers/notificationReducer'
 import { setBlogs } from './reducers/blogReducer'
 import { initUser } from './reducers/userReducer'
+import { setUsers } from './reducers/usersReducer'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
 import userService from './services/user'
+import usersService from './services/users'
 
 const App = () => {
   const blogFormRef = useRef()
@@ -23,6 +26,12 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then((blogs) => {
       dispatch(setBlogs(blogs))
+    })
+  }, [dispatch])
+
+  useEffect(() => {
+    usersService.getAll().then((users) => {
+      dispatch(setUsers(users))
     })
   }, [dispatch])
 
@@ -58,6 +67,7 @@ const App = () => {
   }
 
   const user = useSelector((state) => state.user)
+  const allUsers = useSelector((state) => state.users)
 
   if (user === null) {
     return (
@@ -81,17 +91,15 @@ const App = () => {
   }
 
   const Users = () => {
-    const blogs = useSelector((state) => state.blogs)
-    const byUser = _.groupBy(blogs, (b) => b.user.name)
-    const blogCounts = Object.keys(byUser).map((name) => {
-      return {
-        name,
-        addedBlogs: byUser[name].length
-      }
-    })
-    const sortedByBlogCounts = blogCounts.sort(
-      (a, b) => b.blogs - a.blogs
+    // console.log(allUsers)
+    if (!allUsers) {
+      return null
+    }
+    const usersSortedByBlogCount = allUsers.sort(
+      (a, b) => b.blogs.length - a.blogs.length
     )
+    // console.log('sorted:', usersSortedByBlogCount)
+
     return (
       <div>
         <h2>Users</h2>
@@ -101,11 +109,11 @@ const App = () => {
               <th></th>
               <th>blogs created</th>
             </tr>
-            {sortedByBlogCounts.map((u) => {
+            {usersSortedByBlogCount.map((u) => {
               return (
                 <tr key={u.name}>
                   <td>{u.name}</td>
-                  <td>{u.addedBlogs}</td>
+                  <td>{u.blogs.length}</td>
                 </tr>
               )
             })}
@@ -140,12 +148,6 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/users" element={<Users />} />
       </Routes>
-
-      {/* <Togglable buttonLabel="new blog" ref={blogFormRef}>
-        <NewBlogForm blogFormRef={blogFormRef} />
-      </Togglable>
-
-      <Blogs user={user} /> */}
     </div>
   )
 }
