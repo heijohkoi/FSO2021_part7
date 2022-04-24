@@ -1,62 +1,25 @@
 import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import Blog from './Blog'
-import blogService from '../services/blogs'
-import { setBlogs } from '../reducers/blogReducer'
-import { createNotification } from '../reducers/notificationReducer'
+import { useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
 
-const Blogs = ({ user }) => {
+const Blogs = () => {
   const blogs = useSelector((state) => state.blogs)
-  const dispatch = useDispatch()
 
-  const likeBlog = async (id) => {
-    const toLike = blogs.find((b) => b.id === id)
-    const liked = {
-      ...toLike,
-      likes: (toLike.likes || 0) + 1,
-      user: toLike.user.id
-    }
-
-    blogService.update(liked.id, liked).then((updatedBlog) => {
-      dispatch(
-        createNotification(
-          `you liked '${updatedBlog.title}' by ${updatedBlog.author}`
-        )
-      )
-      const updatedBlogs = blogs.map((b) =>
-        b.id === id ? updatedBlog : b
-      )
-      dispatch(setBlogs(updatedBlogs))
-    })
-  }
-
-  const removeBlog = (id) => {
-    const toRemove = blogs.find((b) => b.id === id)
-
-    const ok = window.confirm(
-      `remove '${toRemove.title}' by ${toRemove.author}?`
-    )
-
-    if (!ok) {
-      return
-    }
-
-    blogService.remove(id).then(() => {
-      const updatedBlogs = blogs.filter((b) => b.id !== id)
-      dispatch(setBlogs(updatedBlogs))
-    })
+  const style = {
+    padding: 3,
+    margin: 5,
+    borderStyle: 'solid',
+    borderWidth: 1
   }
 
   return (
     <div id="blogs">
       {blogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          likeBlog={likeBlog}
-          removeBlog={removeBlog}
-          user={user}
-        />
+        <div style={style} key={blog.id}>
+          <Link to={`/blogs/${blog.id}`}>
+            {blog.title} {blog.author}
+          </Link>
+        </div>
       ))}
     </div>
   )

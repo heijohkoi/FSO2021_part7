@@ -1,14 +1,13 @@
 import React, { useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Routes, Route, Link, useParams } from 'react-router-dom'
-// import _ from 'lodash'
-// import axios from 'axios'
 
 import LoginForm from './components/LoginForm'
 import NewBlogForm from './components/NewBlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import Blogs from './components/Blogs'
+import Blog from './components/Blog'
 import { createNotification } from './reducers/notificationReducer'
 import { setBlogs } from './reducers/blogReducer'
 import { initUser } from './reducers/userReducer'
@@ -85,7 +84,7 @@ const App = () => {
           <NewBlogForm blogFormRef={blogFormRef} />
         </Togglable>
 
-        <Blogs user={user} />
+        <Blogs />
       </div>
     )
   }
@@ -166,6 +165,7 @@ const App = () => {
       </div>
 
       <Routes>
+        <Route path="/blogs/:id" element={<Blog />} />
         <Route path="/users/:id" element={<User />} />
         <Route path="/users" element={<Users />} />
         <Route path="/" element={<Home />} />
