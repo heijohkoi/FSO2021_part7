@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Routes, Route, Link } from 'react-router-dom'
+import { Routes, Route, Link, useParams } from 'react-router-dom'
 // import _ from 'lodash'
 // import axios from 'axios'
 
@@ -110,15 +110,36 @@ const App = () => {
               <th>blogs created</th>
             </tr>
             {usersSortedByBlogCount.map((u) => {
+              // console.log('u.id: ', u.id)
               return (
-                <tr key={u.name}>
-                  <td>{u.name}</td>
+                <tr key={u.id}>
+                  <td>
+                    <Link to={`/users/${u.id}`}>{u.name}</Link>
+                  </td>
                   <td>{u.blogs.length}</td>
                 </tr>
               )
             })}
           </tbody>
         </table>
+      </div>
+    )
+  }
+
+  const User = () => {
+    const id = useParams().id
+    const singleUser = allUsers.find((u) => u.id === id)
+    if (!singleUser) {
+      return null
+    }
+    // console.log('singleUser: ', singleUser)
+    return (
+      <div>
+        <h1>{singleUser.name}</h1>
+        <h2>added blogs</h2>
+        {singleUser.blogs.map((b) => {
+          return <li key={b.id}>{b.title}</li>
+        })}
       </div>
     )
   }
@@ -145,8 +166,9 @@ const App = () => {
       </div>
 
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/users/:id" element={<User />} />
         <Route path="/users" element={<Users />} />
+        <Route path="/" element={<Home />} />
       </Routes>
     </div>
   )
