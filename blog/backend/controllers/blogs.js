@@ -66,4 +66,20 @@ router.put('/:id', async (request, response) => {
   response.json(updatedBlog)
 })
 
+router.post('/:id/comments', async (request, response) => {
+  const comment = request.body.comment
+
+  const blogToUpdate = await Blog.findById(request.params.id)
+
+  blogToUpdate.comments = blogToUpdate.comments.concat(comment)
+
+  const updatedBlog = await Blog.findByIdAndUpdate(
+    request.params.id,
+    blogToUpdate,
+    { new: true, runValidators: true, context: 'query' }
+  ).populate('user', { username: 1, name: 1 })
+
+  response.json(updatedBlog)
+})
+
 module.exports = router
