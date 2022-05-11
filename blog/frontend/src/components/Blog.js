@@ -70,6 +70,12 @@ const Blog = () => {
       {user.username === blog.user.username ? (
         <button onClick={() => removeBlog(blog.id)}>remove</button>
       ) : null}
+      <h3>comments</h3>
+      <ul>
+        {blog.comments.map((comment) => (
+          <li key={comment}>{comment}</li>
+        ))}
+      </ul>
     </div>
   )
 }

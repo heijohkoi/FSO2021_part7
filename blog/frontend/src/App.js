@@ -149,10 +149,6 @@ const App = () => {
 
   return (
     <div>
-      <h2>blogs</h2>
-
-      <Notification />
-
       <div>
         <Link style={padding} to="/">
           home
@@ -163,6 +159,10 @@ const App = () => {
         {user.name} logged in
         <button onClick={logout}>logout</button>
       </div>
+
+      <Notification />
+
+      <h2>blogs</h2>
 
       <Routes>
         <Route path="/blogs/:id" element={<Blog />} />
