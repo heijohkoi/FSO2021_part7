@@ -1,11 +1,13 @@
-import React from 'react'
+import { React, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import blogService from '../services/blogs'
+import commentService from '../services/comment'
 import { setBlogs } from '../reducers/blogReducer'
 import { createNotification } from '../reducers/notificationReducer'
 
 const Blog = () => {
+  const [commentField, setCommentField] = useState('')
   const blogs = useSelector((state) => state.blogs)
   const user = useSelector((state) => state.user)
   const dispatch = useDispatch()
@@ -50,6 +52,24 @@ const Blog = () => {
     })
   }
 
+  const createComment = async (comment) => {
+    const commentToSend = { comment: comment }
+    commentService
+      .create(blog.id, commentToSend)
+      .then((updatedBlog) => {
+        const updatedBlogs = blogs.map((b) =>
+          b.id === id ? updatedBlog : b
+        )
+        dispatch(setBlogs(updatedBlogs))
+      })
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    createComment(commentField)
+    setCommentField('')
+  }
+
   if (!blog) {
     return null
   }
@@ -71,9 +91,24 @@ const Blog = () => {
         <button onClick={() => removeBlog(blog.id)}>remove</button>
       ) : null}
       <h3>comments</h3>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <input
+            value={commentField}
+            onChange={({ target }) => setCommentField(target.value)}
+            id="comment"
+          />
+        </div>
+        <button id="comment-button" type="submit">
+          add comment
+        </button>
+      </form>
+
       <ul>
         {blog.comments.map((comment) => (
-          <li key={comment}>{comment}</li>
+          <li key={Math.floor(Math.random() * 100000000)}>
+            {comment}
+          </li>
         ))}
       </ul>
     </div>
