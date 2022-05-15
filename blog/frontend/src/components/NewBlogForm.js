@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
+import { TextField, Button } from '@mui/material'
 import { addBlog } from '../reducers/blogReducer'
 import blogService from '../services/blogs'
 import { createNotification } from '../reducers/notificationReducer'
@@ -17,7 +18,8 @@ const NewBlogForm = ({ blogFormRef }) => {
       .then((createdBlog) => {
         dispatch(
           createNotification(
-            `a new blog '${createdBlog.title}' by ${createdBlog.author} added`
+            `a new blog '${createdBlog.title}' by ${createdBlog.author} added`,
+            'success'
           )
         )
         dispatch(addBlog(createdBlog))
@@ -27,7 +29,7 @@ const NewBlogForm = ({ blogFormRef }) => {
         dispatch(
           createNotification(
             'creating a blog failed: ' + error.response.data.error,
-            'alert'
+            'error'
           )
         )
       })
@@ -47,8 +49,8 @@ const NewBlogForm = ({ blogFormRef }) => {
 
       <form onSubmit={handleSubmit}>
         <div>
-          title
-          <input
+          <TextField
+            label="title"
             value={title}
             onChange={({ target }) => setTitle(target.value)}
             id="title"
@@ -56,8 +58,8 @@ const NewBlogForm = ({ blogFormRef }) => {
           />
         </div>
         <div>
-          author
-          <input
+          <TextField
+            label="author"
             value={author}
             onChange={({ target }) => setAuthor(target.value)}
             id="author"
@@ -65,17 +67,17 @@ const NewBlogForm = ({ blogFormRef }) => {
           />
         </div>
         <div>
-          url
-          <input
+          <TextField
+            label="url"
             value={url}
             onChange={({ target }) => setUrl(target.value)}
             id="url"
             placeholder="url of the blog"
           />
         </div>
-        <button id="create-butto" type="submit">
+        <Button variant="contained" color="primary" type="submit">
           create
-        </button>
+        </Button>
       </form>
     </div>
   )

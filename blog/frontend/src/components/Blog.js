@@ -1,6 +1,8 @@
 import { React, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
+import { TextField, Button } from '@mui/material'
+
 import blogService from '../services/blogs'
 import commentService from '../services/comment'
 import { setBlogs } from '../reducers/blogReducer'
@@ -25,7 +27,8 @@ const Blog = () => {
     blogService.update(liked.id, liked).then((updatedBlog) => {
       dispatch(
         createNotification(
-          `you liked '${updatedBlog.title}' by ${updatedBlog.author}`
+          `you liked '${updatedBlog.title}' by ${updatedBlog.author}`,
+          'success'
         )
       )
       const updatedBlogs = blogs.map((b) =>
@@ -84,24 +87,42 @@ const Blog = () => {
       </div>
       <div>
         {blog.likes} likes{' '}
-        <button onClick={() => likeBlog(blog.id)}>like</button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => likeBlog(blog.id)}
+        >
+          like
+        </Button>
       </div>
       <div>added by {blog.user.name}</div>
       {user.username === blog.user.username ? (
-        <button onClick={() => removeBlog(blog.id)}>remove</button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => removeBlog(blog.id)}
+        >
+          remove
+        </Button>
       ) : null}
       <h3>comments</h3>
       <form onSubmit={handleSubmit}>
         <div>
-          <input
+          <TextField
+            label="comment"
             value={commentField}
             onChange={({ target }) => setCommentField(target.value)}
             id="comment"
           />
         </div>
-        <button id="comment-button" type="submit">
+        <Button
+          variant="contained"
+          color="primary"
+          id="comment-button"
+          type="submit"
+        >
           add comment
-        </button>
+        </Button>
       </form>
 
       <ul>

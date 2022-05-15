@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Routes, Route, Link, useParams } from 'react-router-dom'
+import { Container, Button, AppBar, Toolbar } from '@mui/material'
 
 import LoginForm from './components/LoginForm'
 import NewBlogForm from './components/NewBlogForm'
@@ -50,11 +51,13 @@ const App = () => {
       .then((user) => {
         dispatch(initUser(user))
         userService.setUser(user)
-        dispatch(createNotification(`${user.name} logged in!`))
+        dispatch(
+          createNotification(`${user.name} logged in!`, 'success')
+        )
       })
       .catch(() => {
         dispatch(
-          createNotification('wrong username/password', 'alert')
+          createNotification('wrong username/password', 'error')
         )
       })
   }
@@ -62,7 +65,7 @@ const App = () => {
   const logout = () => {
     dispatch(initUser(null))
     userService.clearUser()
-    dispatch(createNotification('good bye!'))
+    dispatch(createNotification('good bye!', 'success'))
   }
 
   const user = useSelector((state) => state.user)
@@ -148,29 +151,52 @@ const App = () => {
   }
 
   return (
-    <div>
+    <Container>
       <div>
-        <Link style={padding} to="/">
-          home
-        </Link>
-        <Link style={padding} to="/users">
-          users
-        </Link>
-        {user.name} logged in
-        <button onClick={logout}>logout</button>
+        <Notification />
+
+        <AppBar position="static">
+          <Toolbar>
+            <Button color="inherit" component={Link} to="/">
+              home
+            </Button>
+            <Button color="inherit" component={Link} to="/users">
+              users
+            </Button>
+            {user.name} logged in
+            <Button color="inherit" onClick={logout}>
+              logout
+            </Button>
+          </Toolbar>
+        </AppBar>
+
+        <div>
+          <Link style={padding} to="/">
+            home
+          </Link>
+          <Link style={padding} to="/users">
+            users
+          </Link>
+          {user.name} logged in
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={logout}
+          >
+            logout
+          </Button>
+        </div>
+
+        <h2>blogs</h2>
+
+        <Routes>
+          <Route path="/blogs/:id" element={<Blog />} />
+          <Route path="/users/:id" element={<User />} />
+          <Route path="/users" element={<Users />} />
+          <Route path="/" element={<Home />} />
+        </Routes>
       </div>
-
-      <Notification />
-
-      <h2>blogs</h2>
-
-      <Routes>
-        <Route path="/blogs/:id" element={<Blog />} />
-        <Route path="/users/:id" element={<User />} />
-        <Route path="/users" element={<Users />} />
-        <Route path="/" element={<Home />} />
-      </Routes>
-    </div>
+    </Container>
   )
 }
 
