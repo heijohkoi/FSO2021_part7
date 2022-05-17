@@ -88,7 +88,8 @@ const Blog = () => {
       <div>
         {blog.likes} likes{' '}
         <Button
-          variant="contained"
+          size="small"
+          variant="outlined"
           color="primary"
           onClick={() => likeBlog(blog.id)}
         >
@@ -98,8 +99,9 @@ const Blog = () => {
       <div>added by {blog.user.name}</div>
       {user.username === blog.user.username ? (
         <Button
+          size="small"
           variant="contained"
-          color="primary"
+          color="error"
           onClick={() => removeBlog(blog.id)}
         >
           remove
@@ -116,6 +118,7 @@ const Blog = () => {
           />
         </div>
         <Button
+          size="small"
           variant="contained"
           color="primary"
           id="comment-button"

@@ -93,14 +93,12 @@ const App = () => {
   }
 
   const Users = () => {
-    // console.log(allUsers)
     if (!allUsers) {
       return null
     }
     const usersSortedByBlogCount = allUsers.sort(
       (a, b) => b.blogs.length - a.blogs.length
     )
-    // console.log('sorted:', usersSortedByBlogCount)
 
     return (
       <div>
@@ -112,7 +110,6 @@ const App = () => {
               <th>blogs created</th>
             </tr>
             {usersSortedByBlogCount.map((u) => {
-              // console.log('u.id: ', u.id)
               return (
                 <tr key={u.id}>
                   <td>
@@ -134,7 +131,7 @@ const App = () => {
     if (!singleUser) {
       return null
     }
-    // console.log('singleUser: ', singleUser)
+
     return (
       <div>
         <h1>{singleUser.name}</h1>
@@ -146,56 +143,35 @@ const App = () => {
     )
   }
 
-  const padding = {
-    padding: 5
-  }
-
   return (
     <Container>
-      <div>
-        <Notification />
-
-        <AppBar position="static">
-          <Toolbar>
-            <Button color="inherit" component={Link} to="/">
-              home
-            </Button>
-            <Button color="inherit" component={Link} to="/users">
-              users
-            </Button>
-            {user.name} logged in
-            <Button color="inherit" onClick={logout}>
-              logout
-            </Button>
-          </Toolbar>
-        </AppBar>
-
-        <div>
-          <Link style={padding} to="/">
+      <AppBar position="static">
+        <Toolbar>
+          <Button color="inherit" component={Link} to="/">
             home
-          </Link>
-          <Link style={padding} to="/users">
+          </Button>
+          <Button color="inherit" component={Link} to="/users">
             users
-          </Link>
-          {user.name} logged in
+          </Button>
+          <em>{user.name} logged in &nbsp;</em>
           <Button
-            variant="contained"
-            color="primary"
+            variant="outlined"
+            size="small"
+            color="inherit"
             onClick={logout}
           >
             logout
           </Button>
-        </div>
+        </Toolbar>
+      </AppBar>
 
-        <h2>blogs</h2>
-
-        <Routes>
-          <Route path="/blogs/:id" element={<Blog />} />
-          <Route path="/users/:id" element={<User />} />
-          <Route path="/users" element={<Users />} />
-          <Route path="/" element={<Home />} />
-        </Routes>
-      </div>
+      <h1>Blog app</h1>
+      <Routes>
+        <Route path="/blogs/:id" element={<Blog />} />
+        <Route path="/users/:id" element={<User />} />
+        <Route path="/users" element={<Users />} />
+        <Route path="/" element={<Home />} />
+      </Routes>
     </Container>
   )
 }

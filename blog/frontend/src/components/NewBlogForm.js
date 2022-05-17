@@ -75,7 +75,12 @@ const NewBlogForm = ({ blogFormRef }) => {
             placeholder="url of the blog"
           />
         </div>
-        <Button variant="contained" color="primary" type="submit">
+        <Button
+          size="small"
+          variant="contained"
+          color="primary"
+          type="submit"
+        >
           create
         </Button>
       </form>
